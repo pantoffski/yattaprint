@@ -102,16 +102,18 @@ app.get('/update', function (req, res) {
 function getBibNo(raceCat, bibNo, e) {
   return e + raceCat.slice(0, 2) + '-' + ("0000" + bibNo).slice(-4);
 }
-
+var isGettingNewData=false;
 function getNewData() {
-  if (insertQ.length > 0) return;
+  if (isGettingNewData||insertQ.length > 0) return;
   db.query("select max(updatedAt)as lastUpdate from runners", function (error, results, fields) {
     if (results[0].lastUpdate != null) lastUpdate = results[0].lastUpdate;
     console.log('https://yattaweb.herokuapp.com/apinaja/runners/' + lastUpdate);
     var vals = [];
+    isGettingNewData=true;
     request.post({
       url: 'https://yattaweb.herokuapp.com/apinaja/runners/' + lastUpdate
     }, function (err, resp, body) {
+      isGettingNewData=false;
       if (err || resp.statusCode != 200) return false;
       var data = JSON.parse(body);
       if (data.length > 0) lastUpdate = data[0].updatedAt;
