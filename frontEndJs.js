@@ -30,6 +30,7 @@ $(function () {
       }
     } else {
       console.log(tagId);
+      //tagId=tagId.slice(14,17)*1;
       $.get('/result/' + tagId, function (data) {
         var ctx = canvas.getContext('2d');
         data.bibNo = data.bibNo.trim();
@@ -70,6 +71,5 @@ $(function () {
       });
       tagId = '';
     }
-    console.log('down!');
   });
 });
