@@ -4,6 +4,7 @@ const escpos = require('escpos');
 const device = new escpos.USB();
 const printer = new escpos.Printer(device);
 //server
+var CronJob = require('cron').CronJob;
 const request = require('request');
 const fs = require('fs');
 const bodyParser = require('body-parser')
@@ -148,32 +149,12 @@ function doInsert() {
     //console.log(vals);
   }
 }
-/*
-const escpos = require('escpos');
-const device = new escpos.USB();
-// const device  = new escpos.Network('localhost');
-// const device  = new escpos.Serial('/dev/usb/lp0');
-const printer = new escpos.Printer(device);
-//zadig-2.3.exe เลือก libusb-win32 ให้ USB Printing Support
-escpos.Image.load(__dirname + '/a.png', function (image) {
-  device.open(function () {
-    printer
-      // .font('a')
-      .align('ct')
-      // .style('bu')
-      //.encode('utf-8')
-      //.size(1, 1)
-      .image(image, 'd24')
-      // .text('The quick ')
-      // .text('สวัสดี')
-      // .text('The quick brown fox jumps over the lazy dog')
-      // .text('. ')
-      // .text('. ')
-      .cut().close();
-    // .qrimage('https://github.com/song940/node-escpos', function(err){
-    //   this.cut();
-    //   this.close();
-    // });
-  });
+var newDataCron = new CronJob({
+  cronTime: '0-59/10 * * * * *',
+  onTick: function () {
+    getNewData();
+  },
+  start: true,
+  timeZone: 'Asia/Bangkok',
+  runOnInit: false
 });
-*/
