@@ -35,7 +35,7 @@ var db = mysql.createConnection({
   multipleStatements: true
 });
 request.post({
-  url: 'https://babysharkicmm2018.herokuapp.com/apinaja/getGunTime'
+  url: 'https://yattaweb.herokuapp.com/apinaja/getGunTime'
 }, function (err, resp, body) {
   if (err || resp.statusCode != 200) return false;
   gunTime = body * 1;
@@ -107,11 +107,11 @@ function getNewData() {
   if (isGettingNewData||insertQ.length > 0) return;
   db.query("select max(updatedAt)as lastUpdate from runners", function (error, results, fields) {
     if (results[0].lastUpdate != null) lastUpdate = results[0].lastUpdate;
-    console.log('https://babysharkicmm2018.herokuapp.com/apinaja/runners/' + lastUpdate);
+    console.log('https://yattaweb.herokuapp.com/apinaja/runners/' + lastUpdate);
     var vals = [];
     isGettingNewData=true;
     request.post({
-      url: 'https://babysharkicmm2018.herokuapp.com/apinaja/runners/' + lastUpdate
+      url: 'https://yattaweb.herokuapp.com/apinaja/runners/' + lastUpdate
     }, function (err, resp, body) {
       isGettingNewData=false;
       if (err || resp.statusCode != 200) return false;
