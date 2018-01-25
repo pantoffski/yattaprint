@@ -1,8 +1,8 @@
 require('dotenv').config();
 //Printer
-const escpos = require('escpos');
-const device = new escpos.USB();
-const printer = new escpos.Printer(device);
+// const escpos = require('escpos');
+// const device = new escpos.USB();
+// const printer = new escpos.Printer(device);
 //server
 var CronJob = require('cron').CronJob;
 const request = require('request');
@@ -23,7 +23,7 @@ server.listen(app.get('port'), function () {
   console.log('listening to ' + process.env.PORT);
 });
 var lastUpdate = 0,
-  gunTime = 0;
+  gunTime = 1515884431739;
 var genderTotal = [],
   raceCatTotal = [];
 var mysql = require('mysql');
@@ -34,14 +34,14 @@ var db = mysql.createConnection({
   database: 'intrun',
   multipleStatements: true
 });
-request.post({
-  url: 'https://yattaweb.herokuapp.com/apinaja/getGunTime'
-}, function (err, resp, body) {
-  if (err || resp.statusCode != 200) return false;
-  gunTime = body * 1;
-  var data = body;
-  console.log(gunTime);
-});
+// request.post({
+//   url: 'https://yattaweb.herokuapp.com/apinaja/getGunTime'
+// }, function (err, resp, body) {
+//   if (err || resp.statusCode != 200) return false;
+//   gunTime = body * 1;
+//   var data = body;
+//   console.log(gunTime);
+// });
 db.connect();
 var sqlite3 = require('sqlite3').verbose();
 app.use(function (req, res, next) {
@@ -49,21 +49,21 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Headers", "*, content-type");
   next();
 });
-app.post('/print', function (req, res) {
-  var data = req.body.img.replace(/^data:image\/\w+;base64,/, "");
-  var buf = new Buffer(data, 'base64');
-  fs.writeFile('image.png', buf, function (res) {
-    escpos.Image.load(__dirname + '/image.png', function (image) {
-      device.open(function () {
-        printer.align('ct').image(image, 'd24').cut().close();
-      });
-    });
-  });
-  res.send('ok');
-});
-app.get('/result/:tagId', function (req, res) {
+// app.post('/print', function (req, res) {
+//   var data = req.body.img.replace(/^data:image\/\w+;base64,/, "");
+//   var buf = new Buffer(data, 'base64');
+//   fs.writeFile('image.png', buf, function (res) {
+//     escpos.Image.load(__dirname + '/image.png', function (image) {
+//       device.open(function () {
+//         printer.align('ct').image(image, 'd24').cut().close();
+//       });
+//     });
+//   });
+//   res.send('ok');
+// });
+app.get('/result/:bibNo', function (req, res) {
   var ret = {};
-  db.query("select * from runners where tagId=?", [req.params.tagId], function (error, results, fields) {
+  db.query("select * from runners where bibNo like '%"+req.params.bibNo+"' limit 1", function (error, results, fields) {
     //console.log(error);
     if (results.length > 0) {
       ret.name = results[0].name;
@@ -74,7 +74,7 @@ app.get('/result/:tagId', function (req, res) {
       var chk2 = results[0].chk2;
       ret.gender = gender;
       ret.chipTime = chk2 - chk1;
-      ret.gunTime = chk2 - gunTime;
+      ret.gunTime = chk2;
       db.query("select count(tagId)as catPlace from runners where chk2>0 and chk2<" + chk2 + " and raceCat='" + raceCat + "';select count(tagId)as genderPlace from runners where chk2>0 and chk2<" + chk2 + " and gender='" + gender + "';", function (error, results, fields) {
         ret.catPlace = (results[0][0].catPlace + 1) + ' / ' + raceCatTotal[raceCat];
         ret.genderPlace = (results[1][0].genderPlace + 1) + ' / ' + genderTotal[gender];
@@ -151,12 +151,12 @@ function doInsert() {
     //console.log(vals);
   }
 }
-var newDataCron = new CronJob({
-  cronTime: '0-59/10 * * * * *',
-  onTick: function () {
-    getNewData();
-  },
-  start: true,
-  timeZone: 'Asia/Bangkok',
-  runOnInit: false
-});
+// var newDataCron = new CronJob({
+//   cronTime: '0-59/10 * * * * *',
+//   onTick: function () {
+//     getNewData();
+//   },
+//   start: true,
+//   timeZone: 'Asia/Bangkok',
+//   runOnInit: false
+// });

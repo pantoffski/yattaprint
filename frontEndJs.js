@@ -59,15 +59,15 @@ $(function () {
         fillTextRight(ctx, 'Cat Place  :', sx, sy + stepY * 2);
         fillTextRight(ctx, 'Gender Place  :', sx, sy + stepY * 3);
         ctx.fillText(formatTime(data.gunTime),sx+stepX, sy + stepY * 0);
-        ctx.fillText(formatTime(data.gunTime),sx+stepX, sy + stepY * 1);
+        ctx.fillText(formatTime(data.chipTime),sx+stepX, sy + stepY * 1);
         ctx.fillText(data.catPlace,sx+stepX, sy + stepY * 2);
         ctx.fillText(data.genderPlace,sx+stepX, sy + stepY * 3);
         var res = canvas.toDataURL("image/png");
-        $.post('/print', {
-          img: res
-        }, function (data) {
-          console.log(data);
-        });
+        // $.post('/print', {
+        //   img: res
+        // }, function (data) {
+        //   console.log(data);
+        // });
       });
       tagId = '';
     }
